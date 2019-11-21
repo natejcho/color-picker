@@ -1,27 +1,13 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 import RedYellow from "./src/components/redYellow";
+import LeaderBoard from "./src/components/leaderBoard";
 
-export default function App() {
-  return <RedYellow />;
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignContent: "space-between",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 100
-  }
+const MainNavigator = createStackNavigator({
+  Home: { screen: RedYellow },
+  LeaderBoard: { screen: LeaderBoard }
 });
 
-/**
- * red + yellow = orange
- * (256,0,0) + (256,256,0) = (256,128,0)
- * red + blue = violet
- * (256,0,0) + (0,0,256) = (128,0,128)
- * blue + yellow = green
- * (0,0,256) + (256,256,0) = (0,256,0)
- */
+const App = createAppContainer(MainNavigator);
+
+export default App;

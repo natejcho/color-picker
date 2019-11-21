@@ -1,12 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { TouchableHighlight, StyleSheet, Text, View } from "react-native";
+import Confetti from "react-native-confetti";
 import useInterval from "../hooks/useInterval";
 
-export default function App() {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignContent: "space-between",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 100
+  }
+});
+
+const RedYellow = props => {
+  const _confettiView = useRef();
+
   const [money, setMoney] = useState(256);
   const [mystique, setMystique] = useState(256);
   const [delay, setDelay] = useState(0.1);
-
   const [isRunning, setIsRunning] = useState(true);
 
   useInterval(
@@ -29,13 +42,23 @@ export default function App() {
   const _onPressButton = () => {
     alert(`Close! ${Math.abs(mystique) * delay}ms`);
     setIsRunning(false);
+    if (_confettiView.current) {
+      _confettiView.current.startConfetti();
+    }
   };
 
   const gameReset = () => {
+    if (_confettiView.current) {
+      _confettiView.current.stopConfetti();
+    }
     setIsRunning(false);
     setMoney(256);
     setMystique(256);
     setIsRunning(true);
+  };
+
+  const goToLeaderBoard = () => {
+    props.navigation.navigate("LeaderBoard");
   };
 
   return (
@@ -61,7 +84,7 @@ export default function App() {
       <Text>
         rgb(256, {money}, {mystique})
       </Text>
-      <TouchableHighlight onPress={gameReset} underlayColor="white">
+      <TouchableHighlight onPress={goToLeaderBoard} underlayColor="white">
         <View
           style={{
             width: 100,
@@ -70,20 +93,17 @@ export default function App() {
           }}
         />
       </TouchableHighlight>
+      <Confetti
+        ref={_confettiView}
+        confettiCount={50}
+        duration={3000}
+        timeout={30}
+      />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignContent: "space-between",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 100
-  }
-});
+export default RedYellow;
 
 /**
  * red + yellow = orange
