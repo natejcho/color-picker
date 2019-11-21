@@ -11,8 +11,8 @@ export default function App() {
 
   useInterval(
     () => {
-      if (money > 128) {
-        setMoney(money - 0.5);
+      if (money > 165) {
+        setMoney(money - 0.35);
       }
       if (mystique > 0) {
         setMystique(mystique - 2);
