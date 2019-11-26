@@ -37,7 +37,6 @@ const Game = props => {
   const [options, setOptions] = useState([[], []]);
 
   useEffect(() => {
-    console.log("hit");
     const blue = props.navigation.getParam("topColor", [0, 0, 256]);
     const yellow = props.navigation.getParam("bottomColor", [256, 256, 0]);
     blue[2] -= getRandomNumber(0, 10.6);
