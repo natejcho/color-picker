@@ -1,11 +1,13 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import RedYellow from "./src/components/redYellow";
+import Game from "./src/components/game";
 import LeaderBoard from "./src/components/leaderBoard";
+import Start from "./src/components/start";
 
 const MainNavigator = createStackNavigator({
-  Home: { screen: RedYellow },
-  LeaderBoard: { screen: LeaderBoard }
+  Home: { screen: Start },
+  LeaderBoard: { screen: LeaderBoard },
+  Game: { screen: Game }
 });
 
 const App = createAppContainer(MainNavigator);
