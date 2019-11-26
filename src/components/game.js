@@ -3,6 +3,12 @@ import { TouchableHighlight, StyleSheet, Text, View } from "react-native";
 import Confetti from "react-native-confetti";
 import { levels } from "../assets";
 import useInterval from "../hooks/useInterval";
+import {
+  getRandomNumber,
+  combineTwoColors,
+  getRandomColor,
+  getRandomInt
+} from "../utils";
 
 const styles = StyleSheet.create({
   colorBlock: {
@@ -23,49 +29,67 @@ const Game = props => {
   const _confettiView = useRef();
 
   const [level, setLevel] = useState(0);
-  const [delay, setDelay] = useState(300);
+  const [topColor, setTopColor] = useState([]);
+  const [bottomColor, setBottomColor] = useState([]);
+  const [rightAnswer, setRightAnswer] = useState([]);
   const [isRunning, setIsRunning] = useState(true);
+  const [index, setIndex] = useState(1);
+  const [options, setOptions] = useState([[], []]);
 
   useEffect(() => {
-    props.navigation.getParam("otherParam", "default value");
-  }, []);
+    console.log("hit");
+    const blue = props.navigation.getParam("topColor", [0, 0, 256]);
+    const yellow = props.navigation.getParam("bottomColor", [256, 256, 0]);
+    blue[2] -= getRandomNumber(0, 10.6);
+    yellow[0] += getRandomNumber(0, 10.6);
+    yellow[1] += getRandomNumber(0, 10.6);
+    const green = combineTwoColors(blue, yellow);
+
+    setTopColor(blue);
+    setBottomColor(yellow);
+    setRightAnswer(green);
+
+    const temp = [green];
+    for (let i = 0; i < levels[0].options; i++) {
+      temp.push(getRandomColor(blue, yellow));
+    }
+    setOptions(temp);
+  }, [props.navigation]);
 
   useInterval(
     () => {
-      if (money > 165) {
-        setMoney(money - 0.35);
-      }
-      if (mystique > 0) {
-        setMystique(mystique - 2);
-      }
+      // setIndex((index + 1) % (levels[level].options + 1));
+      setIndex(getRandomInt(0, options.length));
     },
-    isRunning ? delay : null
+    isRunning ? 1000 : null
   );
 
-  // Make it faster every second!
-  // useInterval(() => {
-  //   setDelay(delay / 10);
-  // }, 1000);
-
   const _onPressButton = () => {
-    setLevel(prev => prev + 1);
-
-    alert(`Close! ${Math.abs(mystique) * delay}ms`);
     setIsRunning(false);
-    if (_confettiView.current) {
-      _confettiView.current.startConfetti();
+    if (options[index] == rightAnswer) {
+      const blue = topColor;
+      const yellow = bottomColor;
+      blue[2] -= getRandomNumber(0, 10.6);
+      yellow[0] += getRandomNumber(0, 10.6);
+      yellow[1] += getRandomNumber(0, 10.6);
+      setTopColor(blue);
+      setBottomColor(yellow);
+      const green = combineTwoColors(blue, yellow);
+      setRightAnswer(green);
+      const temp = [green];
+      for (let i = 0; i < levels[level + 1].options; i++) {
+        temp.push(getRandomColor(blue, yellow));
+      }
+      setOptions(temp);
+      setLevel(prev => prev + 1);
+      setIsRunning(true);
+    } else {
+      alert(`Good Job! You Reached Level ${level + 1}!`);
+      if (_confettiView.current && level > 10) {
+        _confettiView.current.startConfetti();
+      }
     }
   };
-
-  // const gameReset = () => {
-  //   if (_confettiView.current) {
-  //     _confettiView.current.stopConfetti();
-  //   }
-  //   setIsRunning(false);
-  //   setMoney(256);
-  //   setMystique(256);
-  //   setIsRunning(true);
-  // };
 
   return (
     <View style={styles.container}>
@@ -79,28 +103,31 @@ const Game = props => {
             ...styles.colorBlock,
             backgroundColor: `rgb(${topColor.join()})`
           }}
-        />
+        >
+          <Text>
+            {level + 1}
+            {`rgb(${topColor.join()})`}
+          </Text>
+        </View>
       </TouchableHighlight>
       <TouchableHighlight onPress={_onPressButton}>
         <View
           style={{
             ...styles.colorBlock,
-            backgroundColor: `rgb(${center.join()})`
+            backgroundColor: `rgb(${options[index].join()})`
           }}
         >
-          <Text>
-            rgb(256, {money}, {mystique})
-          </Text>
+          <Text>{options[index] == rightAnswer ? "Click Now" : "Wait!"}</Text>
         </View>
       </TouchableHighlight>
-      <TouchableHighlight onPress={goToLeaderBoard}>
-        <View
-          style={{
-            ...styles.colorBlock,
-            backgroundColor: `rgb(${bottomColor.join()})`
-          }}
-        />
-      </TouchableHighlight>
+      <View
+        style={{
+          ...styles.colorBlock,
+          backgroundColor: `rgb(${bottomColor.join()})`
+        }}
+      >
+        <Text>{`rgb(${bottomColor.join()})`}</Text>
+      </View>
       <Confetti
         ref={_confettiView}
         confettiCount={50}
