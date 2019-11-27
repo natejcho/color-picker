@@ -53,7 +53,6 @@ const Game = props => {
       for (let i = 0; i < levels[next].options; i++) {
         temp.push(getRandomColor([0, 128, 0], [128, 256, 128]));
       }
-      console.log(options);
       setOptions(temp);
     }
   };
