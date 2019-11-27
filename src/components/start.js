@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { TouchableHighlight, StyleSheet, Text, View } from "react-native";
+import { getRandomColor } from "../utils";
 
 const styles = StyleSheet.create({
   colorBlock: {
-    color: "white",
     flexBasis: "33.33%",
     justifyContent: "center",
     alignItems: "center",
@@ -18,20 +18,14 @@ const styles = StyleSheet.create({
 
 const Start = props => {
   const [center, setCenter] = useState([38, 189, 127]);
-  const topColor = [center[0] / 2, center[1] / 2, (center[2] + 256) / 2];
-  const bottomColor = [
-    (center[0] + 256) / 2,
-    (center[1] + 256) / 2,
-    center[2] / 2
-  ];
 
-  const changeTheme = () => {};
+  const changeTheme = () => {
+    setCenter(getRandomColor([128, 256, 128], [0, 128, 0]));
+  };
 
   const _onPressButton = () => {
     props.navigation.navigate("Game", {
-      topColor,
-      center,
-      bottomColor
+      center
     });
   };
 
@@ -45,7 +39,7 @@ const Start = props => {
         <View
           style={{
             ...styles.colorBlock,
-            backgroundColor: `rgb(${topColor.join()})`
+            backgroundColor: `rgb(${center.join()})`
           }}
         />
       </TouchableHighlight>
@@ -56,14 +50,14 @@ const Start = props => {
             backgroundColor: `rgb(${center.join()})`
           }}
         >
-          <Text>START!</Text>
+          <Text style={{ color: "white" }}>START!</Text>
         </View>
       </TouchableHighlight>
       <TouchableHighlight onPress={goToLeaderBoard}>
         <View
           style={{
             ...styles.colorBlock,
-            backgroundColor: `rgb(${bottomColor.join()})`
+            backgroundColor: `rgb(${center.join()})`
           }}
         />
       </TouchableHighlight>

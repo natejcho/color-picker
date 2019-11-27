@@ -19,12 +19,12 @@ function getRandomColor(first, second) {
  * @param {array} first
  * @param {array} second
  */
-function combineTwoColors(first, second) {
-  return [
-    (first[0] + second[0]) / 2,
-    (first[1] + second[1]) / 2,
-    (first[2] + second[2]) / 2
-  ];
-}
+// function combineTwoColors(first, second) {
+//   return [
+//     (first[0] + second[0]) / 2,
+//     (first[1] + second[1]) / 2,
+//     (first[2] + second[2]) / 2
+//   ];
+// }
 
-export { combineTwoColors, getRandomInt, getRandomNumber, getRandomColor };
+export { getRandomInt, getRandomColor };
